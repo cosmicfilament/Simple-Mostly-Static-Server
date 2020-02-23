@@ -9,7 +9,7 @@
 # database
 
 # dotenv environment variables file
-.env*
+#.env*
 
 # ssl cert files
 **/*.pem
