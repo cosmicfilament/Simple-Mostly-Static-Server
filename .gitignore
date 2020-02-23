@@ -1,0 +1,20 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+**/node_modules/**
+
+# Logs
+**/*.log
+**/*.gz.b64
+# database
+
+# dotenv environment variables file
+.env*
+
+# ssl cert files
+**/*.pem
+
+# vim stuff
+*~
+*.swp
+*.swo

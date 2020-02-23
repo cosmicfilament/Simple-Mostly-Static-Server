@@ -1,0 +1,30 @@
+{
+	"name": "simple_server",
+	"version": "1.0.0",
+	"description": "",
+	"main": "server.js",
+	"eslintConfig": {
+		"extends": [
+			"plugin:prettier/recommended"
+		]
+	},
+	"scripts": {
+		"start": "npm run nodejs",
+		"prod": "npm run start-prod",
+		"dev": "npm run start-dev",
+		"start-dev": "concurrently --kill-others-on-fail  \"npm run nodejs\"",
+		"start-prod": "concurrently --kill-others-on-fail  \"npm run nodejs\"",
+		"nodejs": "nodemon ./server.js"
+	},
+	"author": "JPB",
+	"license": "ISC",
+	"dependencies": {
+		"dotenv": "*",
+		"express": "*",
+		"mongoose": "*"
+	},
+	"devDependencies": {
+		"concurrently": "*",
+		"nodemon": "*"
+	}
+}

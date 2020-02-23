@@ -1,0 +1,15 @@
+{
+	"short_name": "Server",
+	"name": "Simple Server",
+	"icons": [
+		{
+			"src": "tcf-icon.png",
+			"sizes": "120x120",
+			"type": "image/png"
+		}
+	],
+	"start_url": ".",
+	"display": "standalone",
+	"theme_color": "#000000",
+	"background_color": "#ffffff"
+}
