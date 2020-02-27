@@ -46,7 +46,7 @@ app.use(express.static(path.join(BASE_DIR, 'build')));
 app.use(express.static(path.join(BASE_DIR, 'build', 'js')));
 app.use(express.static(path.join(BASE_DIR, 'build', 'css')));
 
-// need to implement the 404 handler on the client for a react web app
+// uncomment this if using react.
 /* app.get('/*', (req, res) => {
 	res.sendFile(path.join(BASE_DIR, 'build', 'index.html'));
 }); */
@@ -80,7 +80,7 @@ app.shutdown = () => {
 	}, 1000 * 2);
 };
 
-/* TODO -- test this functionality */
+// put anything that you want to shutdown gracefully on CTRL+C here
 process.on('SIGINT', function () {
 	console.log('SIGINT triggered');
 	app.shutdown();
@@ -94,13 +94,17 @@ app.Run = async () => {
 		let loadArray = [
 			initLogs(),
 			/* add other modules like database initialization here */
-			app.listen(NODE_PORT, () => logs.log(`Server started on port ${NODE_PORT}.`, 'blue'))
+			app.listen(NODE_PORT, () =>
+				logs.log(`Server started on port ${NODE_PORT}.`, 'blue')
+			)
 		];
 
 		const loaded = Promise.all(loadArray);
 		loaded.then(() => {
 			logs.log(
-				`Loading server took ${((performance.now() - t0) / 60000).toFixed(4)} minutes to perform.`,
+				`Loading server took ${((performance.now() - t0) / 60000).toFixed(
+					4
+				)} minutes to perform.`,
 				'white'
 			);
 			logs.log('All startup processes are loaded and running.', 'green');
