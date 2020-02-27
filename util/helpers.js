@@ -5,7 +5,7 @@
 /**
  * @module helpers.js
  * @author John Butler
- * @description various helper functions that are needed across modules
+ * @description various helper functions that are needed in frontend as well as backend
  */
 
 (function () {
@@ -175,20 +175,7 @@
 		}
 		return false;
 	};
-	// /**
-	//  * @summary between
-	//  * @description adds a prototype to number to check if a number is within a range
-	//  * @param num, num and inclusive boolean indicator
-	//  * @returns true or false
-	//  */
-	// Number.prototype.between = function(a, b, inclusive = true) {
-	// 	// boolean
-	// 	const min = Math.min(a, b);
-	// 	const max = Math.max(a, b);
-	// 	return inclusive
-	// 		? this >= min && this <= max
-	// 		: this > min && this < max;
-	// };
+
 	/**
      * @summary validateIntegerRange
      * @description validates is a number and within a range
@@ -212,11 +199,11 @@
 	};
 	/**
      * @summary log
-     * @description writes in color to the console in staqing mode only
+     * @description writes in color to the console
      * @param statusCode and message
      * @returns object as JSON string
      */
-	helpers.log = (color, msg) => {
+	helpers.log = (msg, color) => {
 		switch (color) {
 			case 'red':
 				color = '\x1b[31m%s';

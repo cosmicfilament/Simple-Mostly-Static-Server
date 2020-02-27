@@ -103,6 +103,7 @@ app.Run = async () => {
 		});
 
 		// don't start server if running test suite
+		// or array'd startup functions fail
 		if (runServer && app.continueStartup) {
 			app.listen(NODE_PORT, () =>
 				logs.log(`Server started on port ${NODE_PORT}.`, 'blue')

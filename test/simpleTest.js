@@ -24,9 +24,9 @@ describe('Running 4 Tests on the Simple Server', () => {
 		request(app).get('/').expect(200).end((err, res) => {
 			if (err) {
 				console.log(`Error: ${err}`);
-				done(err);
+				return done(err);
 			}
-			else done();
+			return done();
 		});
 	});
 
@@ -34,9 +34,9 @@ describe('Running 4 Tests on the Simple Server', () => {
 		request(app).get('/bad').expect(404).end((err, res) => {
 			if (err) {
 				console.log(`Error: ${err}`);
-				done(err);
+				return done(err);
 			}
-			else done();
+			return done();
 		});
 	});
 
@@ -47,9 +47,9 @@ describe('Running 4 Tests on the Simple Server', () => {
 			.end((err, res) => {
 				if (err) {
 					console.log(`Error: ${err}`);
-					done(err);
+					return done(err);
 				}
-				else done();
+				return done();
 			});
 	});
 
@@ -65,11 +65,10 @@ describe('Running 4 Tests on the Simple Server', () => {
 			.end((err, res) => {
 				if (err) {
 					console.log(`Error: ${err}`);
-					done(err);
+					return done(err);
 				}
-				else done();
+				return done();
 			});
 	});
-
 	app.shutdown();
 });
