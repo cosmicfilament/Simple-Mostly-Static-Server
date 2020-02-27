@@ -17,6 +17,7 @@ const { NODE_PORT, BASE_DIR } = {
 };
 const logs = require('./util/logs');
 const initLogs = require('./lib/logWorker');
+const runServer = process.env.RUN_TESTS === undefined;
 
 const app = express();
 // replaces body-parser
@@ -92,15 +93,20 @@ app.Run = async () => {
 		const t0 = performance.now();
 
 		let loadArray = [
-			initLogs(),
+			initLogs()
 			/* add other modules like database initialization here */
-			app.listen(NODE_PORT, () =>
-				logs.log(`Server started on port ${NODE_PORT}.`, 'blue')
-			)
 		];
 
-		const loaded = Promise.all(loadArray);
-		loaded.then(() => {
+		Promise.all(loadArray).catch(error => {
+			app.continueStartup = false;
+			logs.log(`Aborting... ${error}`, 'red');
+		});
+
+		// don't start server if running test suite
+		if (runServer && app.continueStartup) {
+			app.listen(NODE_PORT, () =>
+				logs.log(`Server started on port ${NODE_PORT}.`, 'blue')
+			);
 			logs.log(
 				`Loading server took ${((performance.now() - t0) / 60000).toFixed(
 					4
@@ -108,12 +114,7 @@ app.Run = async () => {
 				'white'
 			);
 			logs.log('All startup processes are loaded and running.', 'green');
-		});
-
-		loaded.catch(error => {
-			app.continueStartup = false;
-			logs.log(`Aborting... ${error}`, 'red');
-		});
+		}
 	} catch (error) {
 		app.continueStartup = false;
 		logs.log(`aborting... ${error}`, 'red');
@@ -122,3 +123,5 @@ app.Run = async () => {
 };
 
 app.Run(app);
+
+module.exports = app;

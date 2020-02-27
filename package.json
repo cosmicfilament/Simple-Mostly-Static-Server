@@ -4,16 +4,11 @@
 	"description": "",
 	"main": "server.js",
 	"eslintConfig": {
-		"extends": [
-			"plugin:prettier/recommended"
-		]
+		"extends": [ "plugin:prettier/recommended" ]
 	},
 	"scripts": {
 		"start": "npm run nodejs",
-		"prod": "npm run start-prod",
-		"dev": "npm run start-dev",
-		"start-dev": "concurrently --kill-others-on-fail  \"npm run nodejs\"",
-		"start-prod": "concurrently --kill-others-on-fail  \"npm run nodejs\"",
+		"test": "cross-env RUN_TESTS=1 mocha",
 		"nodejs": "nodemon ./server.js"
 	},
 	"author": "JPB",
@@ -24,7 +19,10 @@
 		"mongoose": "*"
 	},
 	"devDependencies": {
-		"concurrently": "*",
-		"nodemon": "*"
+		"chai": "^4.2.0",
+		"cross-env": "^7.0.0",
+		"mocha": "^7.1.0",
+		"nodemon": "*",
+		"supertest": "^4.0.2"
 	}
 }
