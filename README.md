@@ -13,6 +13,5 @@ This server has 2 default routes, a get and a post which are just placeholders a
 4. The build directory is just a placeholder for the build directory you will create. It has a default index.html file in it so that the server will work correctly for testing right out of the box.
 5. In the routes subdirectory there is a file called apiRouter.js that is a stub for a get request and a post request. The routes are called from the server.js file and should be commented out if you are only serving static web pages.
 6. The logs subdirectory must be present in your server directory structure or log files will not be generated.
-7. In the util subdirectory are 2 different modules that each handle file operations. Neither one is hooked up into the server but are there if you need them.
 
-#### That's it. Happy webbing
+#### That's it

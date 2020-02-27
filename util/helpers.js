@@ -3,11 +3,11 @@
 /* eslint-disable no-restricted-globals */
 
 /**
- * @file various helper functions
  * @module helpers.js
+ * @author John Butler
  * @description various helper functions that are needed across modules
- *	@exports helpers
  */
+
 (function () {
 	const root =
 		(typeof self == 'object' && self.self === self && self) ||
@@ -23,7 +23,8 @@
 			exports = module.exports = helpers;
 		}
 		exports.helpers = helpers;
-	} else {
+	}
+	else {
 		root.helpers = helpers;
 	}
 
@@ -34,7 +35,8 @@
 	if (typeof nodeConfig === 'undefined') {
 		if (has_require) {
 			nodeConfig = require('./nodeConfig.js');
-		} else {
+		}
+		else {
 			throw new Error('Missing requires: nodeConfig.js');
 		}
 	}
@@ -84,12 +86,7 @@
      * @param comparator
      * @returns string or false on fail
      */
-	helpers.validateString = (
-		str = '',
-		retval = false,
-		len = 0,
-		comparator = '>'
-	) => {
+	helpers.validateString = (str = '', retval = false, len = 0, comparator = '>') => {
 		// if it isn't a valid string why waste time
 		if (helpers.TYPEOF(str) !== 'string' || str.length === 0) {
 			return false;
@@ -132,11 +129,7 @@
      */
 	helpers.validateArray = (obj = '') => {
 		// array object or false
-		if (
-			helpers.TYPEOF(obj) === 'array' &&
-			obj instanceof Array &&
-			obj.length > 0
-		) {
+		if (helpers.TYPEOF(obj) === 'array' && obj instanceof Array && obj.length > 0) {
 			return obj;
 		}
 		return false;
@@ -164,11 +157,7 @@
      */
 	helpers.validateObject = (obj = {}) => {
 		//object or false
-		if (
-			typeof obj === 'object' &&
-			obj !== null &&
-			Object.keys(obj).length > 0
-		) {
+		if (typeof obj === 'object' && obj !== null && Object.keys(obj).length > 0) {
 			return obj;
 		}
 		return false;
@@ -206,17 +195,9 @@
      * @param number, start number and length
      * @returns number or false
      */
-	helpers.validateIntegerRange = (
-		num = 0,
-		start = 0,
-		len = Number.MAX_SAFE_INTEGER
-	) => {
+	helpers.validateIntegerRange = (num = 0, start = 0, len = Number.MAX_SAFE_INTEGER) => {
 		// number or false
-		if (
-			helpers.TYPEOF(num) === 'number' &&
-			num % 1 === 0 &&
-			num.between(start, len)
-		) {
+		if (helpers.TYPEOF(num) === 'number' && num % 1 === 0 && num.between(start, len)) {
 			return num;
 		}
 		return false;
@@ -236,39 +217,37 @@
      * @returns object as JSON string
      */
 	helpers.log = (color, msg) => {
-		if (nodeConfig.DEBUG === true) {
-			switch (color) {
-				case 'red':
-					color = '\x1b[31m%s';
-					break;
-				case 'green':
-					color = '\x1b[32m%s';
-					break;
-				case 'blue':
-					color = '\x1b[34m%s';
-					break;
-				case 'yellow':
-					color = '\x1b[33m%s';
-					break;
-				case 'black':
-					color = '\x1b[30m%s';
-					break;
-				case 'white':
-					color = '\x1b[37m%s';
-					break;
-				case 'cyan':
-					color = '\x1b[36m%s';
-					break;
-				case 'magenta':
-					color = '\x1b[35m%s';
-					break;
-				default:
-					// white
-					color = '\x1b[37m%s';
-					break;
-			}
-			console.log(color, msg);
+		switch (color) {
+			case 'red':
+				color = '\x1b[31m%s';
+				break;
+			case 'green':
+				color = '\x1b[32m%s';
+				break;
+			case 'blue':
+				color = '\x1b[34m%s';
+				break;
+			case 'yellow':
+				color = '\x1b[33m%s';
+				break;
+			case 'black':
+				color = '\x1b[30m%s';
+				break;
+			case 'white':
+				color = '\x1b[37m%s';
+				break;
+			case 'cyan':
+				color = '\x1b[36m%s';
+				break;
+			case 'magenta':
+				color = '\x1b[35m%s';
+				break;
+			default:
+				// white
+				color = '\x1b[37m%s';
+				break;
 		}
+		console.log(color, msg);
 	};
 
 	// grabbed this little nugget from http://bonsaiden.github.io/JavaScript-Garden/#types.typeof

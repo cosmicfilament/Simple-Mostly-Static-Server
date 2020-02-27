@@ -1,22 +1,22 @@
 'use strict';
 
 /**
-    * @file nodejs server entry point
-    * @author John Butler
     * @module server.js
+    * @author John Butler
+    * @description main entry point for the server
 */
 
 const express = require('express');
 const path = require('path');
 const { performance } = require('perf_hooks');
-const apiRouter = require('./routes/apiRouter');
 
+const apiRouter = require('./routes/apiRouter');
 const HttpError = require('./util/http-error');
 const { NODE_PORT, BASE_DIR } = {
 	...require('./util/nodeConfig')
 };
 const logs = require('./util/logs');
-const logWorker = require('./lib/logWorker');
+const initLogs = require('./lib/logWorker');
 
 const app = express();
 // replaces body-parser
@@ -47,8 +47,6 @@ app.use(express.static(path.join(BASE_DIR, 'build', 'js')));
 app.use(express.static(path.join(BASE_DIR, 'build', 'css')));
 
 // need to implement the 404 handler on the client for a react web app
-// uncomment this code for react app.
-// comment out this code for non react web app
 /* app.get('/*', (req, res) => {
 	res.sendFile(path.join(BASE_DIR, 'build', 'index.html'));
 }); */
@@ -60,7 +58,7 @@ app.use((req, res, next) => {
 });
 
 app.use((error, req, res, next) => {
-	logs.log(` Error: ${error.message}`, 'b', 'red');
+	logs.log(` Error: ${error.message}`, 'red');
 	return next(error);
 });
 
@@ -76,6 +74,7 @@ app.use((error, req, res, next) => {
 app.continueStartup = true;
 app.shutdown = () => {
 	app.continueStartup = false;
+	console.log('gracefully exiting');
 	setInterval(() => {
 		process.exit(0);
 	}, 1000 * 2);
@@ -83,9 +82,8 @@ app.shutdown = () => {
 
 /* TODO -- test this functionality */
 process.on('SIGINT', function () {
-	db.stop(function (err) {
-		process.exit(err ? 1 : 0);
-	});
+	console.log('SIGINT triggered');
+	app.shutdown();
 });
 
 // startup
@@ -94,33 +92,27 @@ app.Run = async () => {
 		const t0 = performance.now();
 
 		let loadArray = [
-			logWorker.init(),
+			initLogs(),
 			/* add other modules like database initialization here */
-			app.listen(NODE_PORT, () =>
-				logs.log(`Server started on port ${NODE_PORT}.`, 'b', 'blue')
-			)
+			app.listen(NODE_PORT, () => logs.log(`Server started on port ${NODE_PORT}.`, 'blue'))
 		];
+
 		const loaded = Promise.all(loadArray);
 		loaded.then(() => {
 			logs.log(
-				`Loading server took ${((performance.now() - t0) / 60000).toFixed(
-					4
-				)} minutes to perform.`,
-				'b',
+				`Loading server took ${((performance.now() - t0) / 60000).toFixed(4)} minutes to perform.`,
 				'white'
 			);
-		});
-		loaded.then(() => {
-			logs.log('All startup processes are loaded and running.', 'b', 'green');
+			logs.log('All startup processes are loaded and running.', 'green');
 		});
 
 		loaded.catch(error => {
 			app.continueStartup = false;
-			logs.log(`Aborting... ${error}`, 'b', 'red');
+			logs.log(`Aborting... ${error}`, 'red');
 		});
 	} catch (error) {
 		app.continueStartup = false;
-		logs.log(`aborting... ${error}`, 'b', 'red');
+		logs.log(`aborting... ${error}`, 'red');
 		app.shutdown();
 	}
 };
