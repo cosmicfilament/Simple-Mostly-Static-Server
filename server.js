@@ -39,6 +39,11 @@ app.use((req, res, next) => {
 
 	next();
 });
+// logging
+app.use((req, res, next) => {
+	logs.log(`[${req.ip}]-[${req.method}]-[${req.url}]`, 'white');
+	next();
+});
 
 // put your http request routing here
 app.use('/api', apiRouter);

@@ -17,8 +17,7 @@
 	"license": "ISC",
 	"dependencies": {
 		"dotenv": "*",
-		"express": "*",
-		"mongoose": "*"
+		"express": "*"
 	},
 	"devDependencies": {
 		"chai": "^4.2.0",
