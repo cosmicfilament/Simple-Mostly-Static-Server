@@ -17,9 +17,8 @@ const {
 	gzip,
 	unzip
 } = require('./fileP');
-const nodeConfig = require('./nodeConfig');
 
-const logs = {};
+const nodeConfig = require('./nodeConfig');
 // log directory
 const logDirectory = `${nodeConfig.BASE_DIR}/${nodeConfig.LOG_DIR}`;
 
@@ -32,6 +31,8 @@ const makeFName = (fName, logFile = true) => {
 		return `${logDirectory}/${fName}.gz.b64`;
 	}
 };
+
+const logs = {};
 
 logs.append = async function (file, str) {
 	const fName = makeFName(file);
@@ -68,7 +69,7 @@ logs.compress = async function (logId, newFileId) {
 	const destFile = makeFName(newFileId, false);
 
 	let sourceData = await readFileAsUtf8(sourceFile);
-	let sourceDataZipped = await gzip(sourceFile, sourceData);
+	let sourceDataZipped = await gzip(sourceData);
 	let fd = await openFile(destFile, 'wx');
 
 	await saveFile(fd, sourceDataZipped.toString('base64'));
@@ -92,7 +93,9 @@ logs.log = async function (logData, color = 'red') {
 	logs.console(logString, color);
 
 	// Determine the name of the currently active log file
-	const logFileName = `${timeNow.getFullYear()}${timeNow.getMonth() + 1}${timeNow.getDate()}`;
+	const logFileName = `${timeNow.getFullYear()}_${nodeConfig.MONTH[
+		timeNow.getMonth()
+	]}_${timeNow.getDate()}`;
 
 	// pop this new entry onto the current log file.
 	return await logs.append(logFileName, logString);

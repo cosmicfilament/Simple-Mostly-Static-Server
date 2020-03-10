@@ -17,6 +17,7 @@ const { NODE_PORT, BASE_DIR } = {
 };
 const logs = require('./util/logs');
 const initLogs = require('./lib/logWorker');
+
 const runServer = process.env.RUN_TESTS === undefined;
 
 const app = express();

@@ -10,6 +10,21 @@ require('dotenv').config();
 
 const nodeConfig = {};
 
+nodeConfig.MONTH = [
+	'Jan',
+	'Feb',
+	'Mar',
+	'Apr',
+	'May',
+	'Jun',
+	'Jul',
+	'Aug',
+	'Sep',
+	'Oct',
+	'Nov',
+	'Dec'
+];
+
 // log file directory
 nodeConfig.LOG_DIR = 'logs';
 nodeConfig.LOG_ROTATION_CHECK = 1000 * 60 * 59;
