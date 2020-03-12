@@ -15,8 +15,8 @@ const HttpError = require('./util/http-error');
 const { NODE_PORT, BASE_DIR } = {
 	...require('./util/nodeConfig')
 };
-const logs = require('./util/logs');
-const initLogs = require('./lib/logWorker');
+const logs = require('./logger/logs');
+const initLogRotation = require('./logger/logRotation');
 
 const runServer = process.env.RUN_TESTS === undefined;
 
@@ -99,7 +99,7 @@ app.Run = async () => {
 		const t0 = performance.now();
 
 		let loadArray = [
-			initLogs()
+			initLogRotation()
 			/* add other modules like database initialization here */
 		];
 

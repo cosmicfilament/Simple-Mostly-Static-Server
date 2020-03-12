@@ -16,9 +16,9 @@ const {
 	readFileAsUtf8,
 	gzip,
 	unzip
-} = require('./fileP');
+} = require('../util/fileP');
 
-const nodeConfig = require('./nodeConfig');
+const nodeConfig = require('../util/nodeConfig');
 // log directory
 const logDirectory = `${nodeConfig.BASE_DIR}/${nodeConfig.LOG_DIR}`;
 
@@ -37,17 +37,29 @@ const logs = {};
 logs.append = async function (file, str) {
 	const fName = makeFName(file);
 
-	// open file for appending
-	const fd = await openFile(fName, 'a');
-	// append log entry to the file
-	fd && (await appendToFile(fd, `${str}\n`));
+	try {
+		// open file for appending
+		const fd = await openFile(fName, 'a');
+		// append log entry to the file
+		fd && (await appendToFile(fd, `${str}\n`));
 
-	return await closeFile(fd);
+		return await closeFile(fd);
+	} catch (error) {
+		console.trace(`logs.append failed: ${error}`);
+		return false;
+	}
 };
 
 logs.list = async function (includeCompressedLogs) {
-	//read the directory contents
-	let logData = await readDirectory(logDirectory);
+	let logData = null;
+
+	try {
+		//read the directory contents
+		logData = await readDirectory(logDirectory);
+	} catch (error) {
+		console.trace(`logs.list failed: ${error}`);
+	}
+
 	let trimmedFileNames = [];
 	if (logData) {
 		for (let fileName of logData) {
@@ -68,22 +80,36 @@ logs.compress = async function (logId, newFileId) {
 	const sourceFile = makeFName(logId);
 	const destFile = makeFName(newFileId, false);
 
-	let sourceData = await readFileAsUtf8(sourceFile);
-	let sourceDataZipped = await gzip(sourceData);
-	let fd = await openFile(destFile, 'wx');
+	try {
+		let sourceData = await readFileAsUtf8(sourceFile);
+		let sourceDataZipped = await gzip(sourceData);
+		let fd = await openFile(destFile, 'wx');
 
-	await saveFile(fd, sourceDataZipped.toString('base64'));
-	return await closeFile(fd);
+		await saveFile(fd, sourceDataZipped.toString('base64'));
+		return await closeFile(fd);
+	} catch (error) {
+		console.trace(`logs.compress failed: ${error}`);
+	}
 };
 
 logs.decompress = async function (fileId) {
 	const file = makeFName(fileId);
-	const sourceData = await readFileAsUtf8(file);
-	return await unzip(sourceData);
+	try {
+		const sourceData = await readFileAsUtf8(file);
+		return await unzip(sourceData);
+	} catch (error) {
+		console.trace(`logs.decompress failed: ${error}`);
+		return null;
+	}
 };
 
 logs.delete = async function (logId) {
-	return await deleteFile(makeFName(logId));
+	try {
+		return await deleteFile(makeFName(logId));
+	} catch (error) {
+		console.trace(`logs.delete failed: ${error}`);
+		return false;
+	}
 };
 
 logs.log = async function (logData, color = 'red') {

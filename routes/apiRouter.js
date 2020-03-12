@@ -9,7 +9,7 @@
 const express = require('express');
 const router = express.Router();
 
-const logs = require('../util/logs');
+const logs = require('../logger/logs');
 
 router.get('/get', (req, res) => router.getSomething(req, res));
 

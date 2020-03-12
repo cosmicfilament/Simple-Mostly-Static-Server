@@ -17,7 +17,6 @@ const {
 	readdir,
 	appendFile,
 	unlink,
-	access,
 	stat
 } = require('fs');
 
@@ -32,7 +31,6 @@ const readFileP = promisify(readFile);
 const writeFileP = promisify(writeFile);
 const readDirP = promisify(readdir);
 const appendFileP = promisify(appendFile);
-const accessP = promisify(access);
 const statP = promisify(stat);
 
 const gzipP = promisify(zlib.gzip);
@@ -46,95 +44,81 @@ function errorHandler (err, func, throwError = true) {
 	return false;
 }
 
-async function openFile (fileName, flags = 'a+') {
-	let fd = await openFileP(fileName, flags).catch(error => {
+function openFile (fileName, flags = 'a+') {
+	return openFileP(fileName, flags).catch(error => {
 		return errorHandler(error, 'openFile');
 	});
-	return fd;
 }
 
-async function closeFile (fd) {
-	await closeFileP(fd).catch(error => {
+function closeFile (fd) {
+	closeFileP(fd).catch(error => {
 		return errorHandler(error, 'closeFile');
 	});
 	return true;
 }
 
-async function truncateFile (fd) {
-	await ftruncateFileP(fd).catch(error => {
+function truncateFile (fd) {
+	ftruncateFileP(fd).catch(error => {
 		return errorHandler(error, 'truncateFile');
 	});
 	return true;
 }
 
-async function readFileAsUtf8 (fileName) {
-	let str = await readFileP(fileName, 'utf8').catch(error => {
+function readFileAsUtf8 (fileName) {
+	return readFileP(fileName, 'utf8').catch(error => {
 		return errorHandler(error, 'readFileAsUtf8');
 	});
-	return str;
 }
 
-async function readFileBuffer (fileName) {
-	let buffer = await readFileP(fileName).catch(error => {
+function readFileBuffer (fileName) {
+	return readFileP(fileName).catch(error => {
 		return errorHandler(error, 'readFileBuffer');
 	});
-	return buffer;
 }
 
-async function saveFile (fileName, data) {
-	await writeFileP(fileName, data).catch(error => {
+function saveFile (fileName, data) {
+	writeFileP(fileName, data).catch(error => {
 		return errorHandler(error, 'saveFile');
 	});
 	return true;
 }
 
-async function deleteFile (fileName) {
-	await deleteFileP(fileName).catch(error => {
+function deleteFile (fileName) {
+	deleteFileP(fileName).catch(error => {
 		return errorHandler(error, 'deleteFile');
 	});
 	return true;
 }
 
-async function readDirectory (directoryName) {
-	let strArray = await readDirP(directoryName).catch(error => {
+function readDirectory (directoryName) {
+	return readDirP(directoryName).catch(error => {
 		return errorHandler(error, 'readDirectory');
 	});
-	return strArray;
 }
 
-async function isAccessible (absolutePath) {
-	await accessP(absolutePath, F_OK | R_OK | W_OK).catch(error => {
-		return errorHandler(error, 'isAccessible');
-	});
-	return true;
-}
-
-async function stats (absolutePath) {
-	const _stat = await statP(absolutePath).catch(error => {
+function stats (absolutePath) {
+	return statP(absolutePath).catch(error => {
 		return errorHandler(error, 'stats');
 	});
-	return _stat;
 }
 
-async function appendToFile (fd, str) {
-	await appendFileP(fd, str).catch(error => {
+function appendToFile (fd, str) {
+	appendFileP(fd, str).catch(error => {
 		return errorHandler(error, 'appendToFile');
 	});
 	return true;
 }
 
-async function gzip (sourceData) {
-	const zippedData = await gzipP(sourceData).catch(error => {
+function gzip (sourceData) {
+	return gzipP(sourceData).catch(error => {
 		return errorHandler(error, 'gzip');
 	});
-	return zippedData;
 }
 
-async function unzip (sourceData) {
-	const unZippedData = await unzipP(sourceData).catch(error => {
+function unzip (sourceData) {
+	return unzipP(sourceData).catch(error => {
 		return errorHandler(error, 'unzip');
 	});
-	return unZippedData;
 }
 
 module.exports = {
@@ -146,7 +130,6 @@ module.exports = {
 	saveFile,
 	deleteFile,
 	readDirectory,
-	isAccessible,
 	stats,
 	appendToFile,
 	gzip,
