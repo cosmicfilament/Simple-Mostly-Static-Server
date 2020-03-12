@@ -22,6 +22,12 @@ const nodeConfig = require('../util/nodeConfig');
 // log directory
 const logDirectory = `${nodeConfig.BASE_DIR}/${nodeConfig.LOG_DIR}`;
 
+const INFO = 'INFO: ',
+	REQ = 'REQ: ',
+	RESP = 'RESP: ',
+	WARN = 'WARNING: ',
+	ERROR = 'ERROR: ';
+
 // file in current or target directory
 const makeFName = (fName, logFile = true) => {
 	if (logFile) {
@@ -112,10 +118,17 @@ logs.delete = async function (logId) {
 	}
 };
 
-logs.log = async function (logData, color = 'red') {
+logs._log = async function (logData, level) {
 	const timeNow = new Date(Date.now());
 	// Convert the data to a string
-	const logString = `${timeNow.toLocaleTimeString('en-US')}: ${logData}`;
+	const logString = `${level}${timeNow.toLocaleTimeString('en-US')}: ${logData}`;
+	const color =
+		level === INFO
+			? 'blue'
+			: level === REQ
+				? 'white'
+				: level === RESP ? 'green' : level === WARN ? 'yellow' : 'red';
+
 	logs.console(logString, color);
 
 	// Determine the name of the currently active log file
@@ -157,5 +170,11 @@ logs.console = (msg, color = 'red') => {
 	console.log(color, msg);
 	console.log('\x1b[37m%s', '');
 };
+
+logs.info = logData => logs._log(logData, INFO);
+logs.req = logData => logs._log(logData, REQ);
+logs.resp = logData => logs._log(logData, RESP);
+logs.warning = logData => logs._log(logData, WARN);
+logs.error = logData => logs._log(logData, ERROR);
 
 module.exports = logs;

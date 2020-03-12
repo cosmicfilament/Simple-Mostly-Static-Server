@@ -17,8 +17,8 @@ async function rotateLogs (init = false) {
 	]}_${dateNow.getDate()}`;
 
 	const fileList = await logs.list(false);
-	!init && logs.log('Calling rotateLogs.', 'green');
-	init && logs.log('Archiving logs during initialization', 'green');
+	!init && logs.info('Calling rotateLogs.');
+	init && logs.info('Archiving logs during initialization');
 
 	if (fileList) {
 		for (let fileName of fileList) {
@@ -31,7 +31,7 @@ async function rotateLogs (init = false) {
 				// delete the old log file
 				if (result) {
 					(await logs.delete(logId)) &&
-						logs.console(`Successfully rotated file: ${fileName}`, 'green');
+						logs.info(`Successfully rotated file: ${fileName}`);
 				}
 				else {
 					logs.console(`Rotating logs failed for file: ${fileName}`);
@@ -49,7 +49,7 @@ function loop () {
 }
 
 function initLogRotation () {
-	logs.log('Log rotation background worker has started.', 'blue');
+	logs.info('Log rotation background worker has started.');
 	rotateLogs(true);
 	//Call the log compression loop
 	loop();

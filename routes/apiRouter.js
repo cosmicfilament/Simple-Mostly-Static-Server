@@ -17,13 +17,13 @@ router.post('/post', (req, res) => router.postSomething(req, res));
 
 router.getSomething = async (req, res) => {
 	const query = req.query;
-	logs.log(`getSomething query: ${JSON.stringify(query)}`, 'green');
+	logs.resp(`getSomething query: ${JSON.stringify(query)}`);
 	res.json({ msg: 'Get Something', query });
 };
 
 router.postSomething = async (req, res) => {
 	const body = req.body;
-	logs.log(`postSomething body: ${JSON.stringify(body)}`, 'green');
+	logs.resp(`postSomething body: ${JSON.stringify(body)}`);
 	res.json({ msg: 'Post Something', body });
 };
 

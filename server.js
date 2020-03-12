@@ -9,6 +9,7 @@
 const express = require('express');
 const path = require('path');
 const { performance } = require('perf_hooks');
+const t0 = performance.now();
 
 const apiRouter = require('./routes/apiRouter');
 const HttpError = require('./util/http-error');
@@ -41,7 +42,7 @@ app.use((req, res, next) => {
 });
 // logging
 app.use((req, res, next) => {
-	logs.log(`[${req.ip}]-[${req.method}]-[${req.url}]`, 'white');
+	logs.req(`[${req.ip}]-[${req.method}]-[${req.url}]`);
 	next();
 });
 
@@ -65,7 +66,7 @@ app.use((req, res, next) => {
 });
 
 app.use((error, req, res, next) => {
-	logs.log(` Error: ${error.message}`, 'red');
+	logs.error(` Error: ${error.message}`);
 	return next(error);
 });
 
@@ -96,8 +97,6 @@ process.on('SIGINT', function () {
 // startup
 app.Run = async () => {
 	try {
-		const t0 = performance.now();
-
 		let loadArray = [
 			initLogRotation()
 			/* add other modules like database initialization here */
@@ -105,26 +104,23 @@ app.Run = async () => {
 
 		Promise.all(loadArray).catch(error => {
 			app.continueStartup = false;
-			logs.log(`Aborting... ${error}`, 'red');
+			logs.error(`Aborting... ${error}`);
 		});
 
 		// don't start server if running test suite
 		// or array'd startup functions fail
 		if (runServer && app.continueStartup) {
-			app.listen(NODE_PORT, () =>
-				logs.log(`Server started on port ${NODE_PORT}.`, 'blue')
-			);
-			logs.log(
-				`Loading server took ${((performance.now() - t0) / 60000).toFixed(
+			app.listen(NODE_PORT, () => logs.info(`Server started on port ${NODE_PORT}.`));
+			logs.info(
+				`Server startup took ${(performance.now() - t0).toFixed(
 					4
-				)} minutes to perform.`,
-				'white'
+				)} milliseconds to perform.`
 			);
-			logs.log('All startup processes are loaded and running.', 'green');
+			logs.info('All startup processes are loaded and running.');
 		}
 	} catch (error) {
 		app.continueStartup = false;
-		logs.log(`aborting... ${error}`, 'red');
+		logs.error(`aborting... ${error}`);
 		app.shutdown();
 	}
 };
